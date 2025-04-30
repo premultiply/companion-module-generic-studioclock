@@ -1,5 +1,5 @@
 {
-	"name": "canvas-clock",
+	"name": "generic-studioclock",
 	"version": "1.0.0",
 	"main": "src/index.js",
 	"type": "module",
@@ -11,7 +11,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/bitfocus/companion-module-canvas-clock.git"
+		"url": "git+https://github.com/bitfocus/companion-module-generic-studioclock.git"
 	},
 	"license": "MIT",
 	"dependencies": {

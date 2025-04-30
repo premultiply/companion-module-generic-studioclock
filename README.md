@@ -1,4 +1,4 @@
-# companion-module-canvas-clock
+# companion-module-generic-studioclock
 
 See HELP.md and LICENSE
 

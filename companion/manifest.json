@@ -2,7 +2,7 @@
 	"id": "generic-studioclock",
 	"name": "Studio Clock",
 	"shortname": "Clock",
-	"description": "Draws a beautiful studio-style clock on your buttons.",
+	"description": "Draws a beautiful realtime studio-style clock on your Companion buttons",
 	"version": "1.0.0",
 	"license": "MIT",
 	"repository": "git+https://github.com/bitfocus/companion-module-generic-studioclock.git",

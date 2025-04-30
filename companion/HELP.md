@@ -1,6 +1,6 @@
 Generic Studio Clock
 
-Renders a beautiful realtime studio-style clock on your Companion buttons
+Draws a beautiful realtime studio-style clock on your Companion buttons
 
 Add a single module instance to Companion. There is no module configuration.
 
