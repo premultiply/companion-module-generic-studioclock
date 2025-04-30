@@ -774,9 +774,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"canvas-clock@workspace:.":
+"generic-studioclock@workspace:.":
   version: 0.0.0-use.local
-  resolution: "canvas-clock@workspace:."
+  resolution: "generic-studioclock@workspace:."
   dependencies:
     "@companion-module/base": "npm:~1.11.2"
     "@companion-module/tools": "npm:^2.1.1"

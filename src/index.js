@@ -3,7 +3,7 @@ import { InstanceBase, InstanceStatus, runEntrypoint } from '@companion-module/b
 import { setFeedbacks } from './feedbacks.js'
 import { StudioClock } from './clock.js'
 
-class CanvasClockInstance extends InstanceBase {
+class StudioClockInstance extends InstanceBase {
 	constructor(internal) {
 		super(internal)
 
@@ -58,4 +58,4 @@ class CanvasClockInstance extends InstanceBase {
 	}
 }
 
-runEntrypoint(CanvasClockInstance)
+runEntrypoint(StudioClockInstance)
