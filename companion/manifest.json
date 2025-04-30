@@ -1,7 +1,7 @@
 {
 	"id": "generic-studioclock",
 	"name": "Studio Clock",
-	"shortname": "Clock",
+	"shortname": "Studio Clock",
 	"description": "Draws a beautiful realtime studio-style clock on your Companion buttons",
 	"version": "1.0.0",
 	"license": "MIT",
