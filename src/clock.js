@@ -2,7 +2,7 @@ import { createCanvas } from 'canvas'
 
 export class StudioClock {
 	constructor(width, height) {
-		this.CurrentDate = new Date()
+		this.currentDate = new Date()
 
 		this.Digits = [
 			[1, 1, 1, 1, 1, 1, 0], // 0
@@ -20,9 +20,6 @@ export class StudioClock {
 		this.canvas = createCanvas(width, height)
 		this.context = this.canvas.getContext('2d')
 
-		//this.canvas.height = this.canvas.offsetHeight
-		//this.canvas.width = this.canvas.offsetWidth
-
 		this.radiusExt = (this.canvas.width * 0.9) / 2
 		this.radius = (this.canvas.width * 0.8) / 2
 		this.lengthSeg = 9 * (this.radius / 36)
@@ -31,8 +28,8 @@ export class StudioClock {
 		this.lengthSmallSeg = (this.lengthSeg * 3) / 5
 		this.radiusSmallDot = (this.lengthSmallSeg / 4) * 0.47
 
-		this.centerX = this.canvas.height / 2
-		this.centerY = this.canvas.width / 2
+		this.centerX = this.canvas.width / 2
+		this.centerY = this.canvas.height / 2
 
 		this.config = {
 			colorStroke: 'rgba(68, 0, 0, 0.0)',
@@ -54,7 +51,7 @@ export class StudioClock {
 
 		this.drawWaves()
 		this.drawDigits()
-		this.drawColon(this.CurrentDate.getSeconds() % 2 === 0)
+		this.drawColon(this.currentDate.getSeconds() % 2 === 0)
 
 		return this.canvas.toDataURL('image/png').split(';base64,')[1]
 	}
@@ -83,7 +80,7 @@ export class StudioClock {
 				2 * Math.PI,
 				false,
 			)
-			if (this.config.reverseDirection ? i < this.CurrentDate.getSeconds() : i <= this.CurrentDate.getSeconds()) {
+			if (this.config.reverseDirection ? i < this.currentDate.getSeconds() : i <= this.currentDate.getSeconds()) {
 				this.context.fillStyle = i % 5 === 0 ? this.config.colorCircleOn : this.config.colorCircleMinorOn
 			} else {
 				this.context.fillStyle = i % 5 === 0 ? this.config.colorCircleOff : this.config.colorCircleMinorOff
@@ -96,229 +93,97 @@ export class StudioClock {
 	}
 
 	drawDigits() {
+		// Hours
 		this.drawDigit(
 			-2 * (this.radius / 3),
 			0,
 			this.lengthSeg,
 			this.radiusDot,
-			Math.floor(this.CurrentDate.getHours() / 10),
+			Math.floor(this.currentDate.getHours() / 10),
 		)
-		this.drawDigit(-7 * (this.radius / 24), 0, this.lengthSeg, this.radiusDot, this.CurrentDate.getHours() % 10)
+		this.drawDigit(-7 * (this.radius / 24), 0, this.lengthSeg, this.radiusDot, this.currentDate.getHours() % 10)
+		// Minutes
 		this.drawDigit(
 			7 * (this.radius / 24),
 			0,
 			this.lengthSeg,
 			this.radiusDot,
-			Math.floor(this.CurrentDate.getMinutes() / 10),
+			Math.floor(this.currentDate.getMinutes() / 10),
 		)
-		this.drawDigit(2 * (this.radius / 3), 0, this.lengthSeg, this.radiusDot, this.CurrentDate.getMinutes() % 10)
+		this.drawDigit(2 * (this.radius / 3), 0, this.lengthSeg, this.radiusDot, this.currentDate.getMinutes() % 10)
+		// Seconds
 		this.drawDigit(
-			4.5 * (this.radius / 36),
+			3 * (this.radius / 24),
 			this.radius / 2,
 			this.lengthSmallSeg,
 			this.radiusSmallDot,
-			this.CurrentDate.getSeconds() % 10,
+			this.currentDate.getSeconds() % 10,
 		)
 		this.drawDigit(
-			-4.5 * (this.radius / 36),
+			-3 * (this.radius / 24),
 			this.radius / 2,
 			this.lengthSmallSeg,
 			this.radiusSmallDot,
-			Math.floor(this.CurrentDate.getSeconds() / 10),
+			Math.floor(this.currentDate.getSeconds() / 10),
 		)
 	}
 
-	drawDigit(x, y, l, r, val) {
-		var color = this.Digits[val][0] ? this.config.colorDigit : this.config.colorDigitColonOff
-		this.context.beginPath()
-		this.context.arc(this.centerX + x + 0.18 * l - (5 * l) / 18, this.centerY + y - l, r, 0, 2 * Math.PI, false)
-		this.context.fillStyle = color
-		this.context.fill()
-		this.context.lineWidth = 1
-		this.context.strokeStyle = this.config.colorStroke
-		if (color == this.config.colorDigit || !this.config.hideStrokeWhenOff) this.context.stroke()
-		this.context.beginPath()
-		this.context.arc(this.centerX + x + 0.18 * l, this.centerY + y - l, r, 0, 2 * Math.PI, false)
-		this.context.fillStyle = color
-		this.context.fill()
-		this.context.lineWidth = 1
-		this.context.strokeStyle = this.config.colorStroke
-		if (color == this.config.colorDigit || !this.config.hideStrokeWhenOff) this.context.stroke()
-		this.context.beginPath()
-		this.context.arc(this.centerX + x + 0.18 * l + (5 * l) / 18, this.centerY + y - l, r, 0, 2 * Math.PI, false)
-		this.context.fillStyle = color
-		this.context.fill()
-		this.context.lineWidth = 1
-		this.context.strokeStyle = this.config.colorStroke
-		if (color == this.config.colorDigit || !this.config.hideStrokeWhenOff) this.context.stroke()
+	drawDigit(posX, posY, segLen, radius, digitValue) {
+		const drawArc = (centerX, centerY, offsetX, offsetY, radius, color) => {
+			this.context.beginPath()
+			this.context.arc(centerX + offsetX, centerY + offsetY, radius, 0, 2 * Math.PI, false)
+			this.context.fillStyle = color
+			this.context.fill()
+			if (color === this.config.colorDigit || !this.config.hideStrokeWhenOff) {
+				this.context.lineWidth = 1
+				this.context.strokeStyle = this.config.colorStroke
+				this.context.stroke()
+			}
+		}
 
-		color = this.Digits[val][1] ? this.config.colorDigit : this.config.colorDigitColonOff
-		this.context.beginPath()
-		this.context.arc(this.centerX + x + l / 2 + 0.132 * l, this.centerY + y - (14 * l) / 18, r, 0, 2 * Math.PI, false)
-		this.context.fillStyle = color
-		this.context.fill()
-		this.context.lineWidth = 1
-		this.context.strokeStyle = this.config.colorStroke
-		if (color == this.config.colorDigit || !this.config.hideStrokeWhenOff) this.context.stroke()
-		this.context.beginPath()
-		this.context.arc(this.centerX + x + l / 2 + 0.088 * l, this.centerY + y - l / 2, r, 0, 2 * Math.PI, false)
-		this.context.fillStyle = color
-		this.context.fill()
-		this.context.lineWidth = 1
-		this.context.strokeStyle = this.config.colorStroke
-		if (color == this.config.colorDigit || !this.config.hideStrokeWhenOff) this.context.stroke()
-		this.context.beginPath()
-		this.context.arc(this.centerX + x + l / 2 + 0.044 * l, this.centerY + y - (4 * l) / 18, r, 0, 2 * Math.PI, false)
-		this.context.fillStyle = color
-		this.context.fill()
-		this.context.lineWidth = 1
-		this.context.strokeStyle = this.config.colorStroke
-		if (color == this.config.colorDigit || !this.config.hideStrokeWhenOff) this.context.stroke()
+		const segments = [
+			[0.18 * segLen - (5 * segLen) / 18, -segLen, this.Digits[digitValue][0]],
+			[0.18 * segLen, -segLen, this.Digits[digitValue][0]],
+			[0.18 * segLen + (5 * segLen) / 18, -segLen, this.Digits[digitValue][0]],
+			[segLen / 2 + 0.132 * segLen, -(14 * segLen) / 18, this.Digits[digitValue][1]],
+			[segLen / 2 + 0.088 * segLen, -segLen / 2, this.Digits[digitValue][1]],
+			[segLen / 2 + 0.044 * segLen, -(4 * segLen) / 18, this.Digits[digitValue][1]],
+			[segLen / 2 - 0.132 * segLen, (14 * segLen) / 18, this.Digits[digitValue][2]],
+			[segLen / 2 - 0.088 * segLen, segLen / 2, this.Digits[digitValue][2]],
+			[segLen / 2 - 0.044 * segLen, (4 * segLen) / 18, this.Digits[digitValue][2]],
+			[-0.18 * segLen - (5 * segLen) / 18, segLen, this.Digits[digitValue][3]],
+			[-0.18 * segLen, segLen, this.Digits[digitValue][3]],
+			[-0.18 * segLen + (5 * segLen) / 18, segLen, this.Digits[digitValue][3]],
+			[-segLen / 2 - 0.132 * segLen, (14 * segLen) / 18, this.Digits[digitValue][4]],
+			[-segLen / 2 - 0.088 * segLen, segLen / 2, this.Digits[digitValue][4]],
+			[-segLen / 2 - 0.044 * segLen, (4 * segLen) / 18, this.Digits[digitValue][4]],
+			[-segLen / 2 + 0.132 * segLen, -(14 * segLen) / 18, this.Digits[digitValue][5]],
+			[-segLen / 2 + 0.088 * segLen, -segLen / 2, this.Digits[digitValue][5]],
+			[-segLen / 2 + 0.044 * segLen, -(4 * segLen) / 18, this.Digits[digitValue][5]],
+			[-(5 * segLen) / 18, 0, this.Digits[digitValue][6]],
+			[0, 0, this.Digits[digitValue][6]],
+			[(5 * segLen) / 18, 0, this.Digits[digitValue][6]],
+		]
 
-		color = this.Digits[val][2] ? this.config.colorDigit : (color = this.config.colorDigitColonOff)
-		this.context.beginPath()
-		this.context.arc(this.centerX + x + l / 2 - 0.132 * l, this.centerY + y + (14 * l) / 18, r, 0, 2 * Math.PI, false)
-		this.context.fillStyle = color
-		this.context.fill()
-		this.context.lineWidth = 1
-		this.context.strokeStyle = this.config.colorStroke
-		if (color == this.config.colorDigit || !this.config.hideStrokeWhenOff) this.context.stroke()
-		this.context.beginPath()
-		this.context.arc(this.centerX + x + l / 2 - 0.088 * l, this.centerY + y + l / 2, r, 0, 2 * Math.PI, false)
-		this.context.fillStyle = color
-		this.context.fill()
-		this.context.lineWidth = 1
-		this.context.strokeStyle = this.config.colorStroke
-		if (color == this.config.colorDigit || !this.config.hideStrokeWhenOff) this.context.stroke()
-		this.context.beginPath()
-		this.context.arc(this.centerX + x + l / 2 - 0.044 * l, this.centerY + y + (4 * l) / 18, r, 0, 2 * Math.PI, false)
-		this.context.fillStyle = color
-		this.context.fill()
-		this.context.lineWidth = 1
-		this.context.strokeStyle = this.config.colorStroke
-		if (color == this.config.colorDigit || !this.config.hideStrokeWhenOff) this.context.stroke()
-
-		color = this.Digits[val][3] ? this.config.colorDigit : this.config.colorDigitColonOff
-		this.context.beginPath()
-		this.context.arc(this.centerX + x - 0.18 * l - (5 * l) / 18, this.centerY + y + l, r, 0, 2 * Math.PI, false)
-		this.context.fillStyle = color
-		this.context.fill()
-		this.context.lineWidth = 1
-		this.context.strokeStyle = this.config.colorStroke
-		if (color == this.config.colorDigit || !this.config.hideStrokeWhenOff) this.context.stroke()
-		this.context.beginPath()
-		this.context.arc(this.centerX + x - 0.18 * l, this.centerY + y + l, r, 0, 2 * Math.PI, false)
-		this.context.fillStyle = color
-		this.context.fill()
-		this.context.lineWidth = 1
-		this.context.strokeStyle = this.config.colorStroke
-		if (color == this.config.colorDigit || !this.config.hideStrokeWhenOff) this.context.stroke()
-		this.context.beginPath()
-		this.context.arc(this.centerX + x - 0.18 * l + (5 * l) / 18, this.centerY + y + l, r, 0, 2 * Math.PI, false)
-		this.context.fillStyle = color
-		this.context.fill()
-		this.context.lineWidth = 1
-		this.context.strokeStyle = this.config.colorStroke
-		if (color == this.config.colorDigit || !this.config.hideStrokeWhenOff) this.context.stroke()
-
-		color = this.Digits[val][4] ? this.config.colorDigit : this.config.colorDigitColonOff
-		this.context.beginPath()
-		this.context.arc(this.centerX + x - l / 2 - 0.132 * l, this.centerY + y + (14 * l) / 18, r, 0, 2 * Math.PI, false)
-		this.context.fillStyle = color
-		this.context.fill()
-		this.context.lineWidth = 1
-		this.context.strokeStyle = this.config.colorStroke
-		if (color == this.config.colorDigit || !this.config.hideStrokeWhenOff) this.context.stroke()
-		this.context.beginPath()
-		this.context.arc(this.centerX + x - l / 2 - 0.088 * l, this.centerY + y + l / 2, r, 0, 2 * Math.PI, false)
-		this.context.fillStyle = color
-		this.context.fill()
-		this.context.lineWidth = 1
-		this.context.strokeStyle = this.config.colorStroke
-		if (color == this.config.colorDigit || !this.config.hideStrokeWhenOff) this.context.stroke()
-		this.context.beginPath()
-		this.context.arc(this.centerX + x - l / 2 - 0.044 * l, this.centerY + y + (4 * l) / 18, r, 0, 2 * Math.PI, false)
-		this.context.fillStyle = color
-		this.context.fill()
-		this.context.lineWidth = 1
-		this.context.strokeStyle = this.config.colorStroke
-		if (color == this.config.colorDigit || !this.config.hideStrokeWhenOff) this.context.stroke()
-
-		color = this.Digits[val][5] ? this.config.colorDigit : this.config.colorDigitColonOff
-		this.context.beginPath()
-		this.context.arc(this.centerX + x - l / 2 + 0.132 * l, this.centerY + y - (14 * l) / 18, r, 0, 2 * Math.PI, false)
-		this.context.fillStyle = color
-		this.context.fill()
-		this.context.lineWidth = 1
-		this.context.strokeStyle = this.config.colorStroke
-		if (color == this.config.colorDigit || !this.config.hideStrokeWhenOff) this.context.stroke()
-		this.context.beginPath()
-		this.context.arc(this.centerX + x - l / 2 + 0.088 * l, this.centerY + y - l / 2, r, 0, 2 * Math.PI, false)
-		this.context.fillStyle = color
-		this.context.fill()
-		this.context.lineWidth = 1
-		this.context.strokeStyle = this.config.colorStroke
-		if (color == this.config.colorDigit || !this.config.hideStrokeWhenOff) this.context.stroke()
-		this.context.beginPath()
-		this.context.arc(this.centerX + x - l / 2 + 0.044 * l, this.centerY + y - (4 * l) / 18, r, 0, 2 * Math.PI, false)
-		this.context.fillStyle = color
-		this.context.fill()
-		this.context.lineWidth = 1
-		this.context.strokeStyle = this.config.colorStroke
-		if (color == this.config.colorDigit || !this.config.hideStrokeWhenOff) this.context.stroke()
-
-		color = this.Digits[val][6] ? this.config.colorDigit : this.config.colorDigitColonOff
-		this.context.beginPath()
-		this.context.arc(this.centerX + x - (5 * l) / 18, this.centerY + y, r, 0, 2 * Math.PI, false)
-		this.context.fillStyle = color
-		this.context.fill()
-		this.context.lineWidth = 1
-		this.context.strokeStyle = this.config.colorStroke
-		if (color == this.config.colorDigit || !this.config.hideStrokeWhenOff) this.context.stroke()
-		this.context.beginPath()
-		this.context.arc(this.centerX + x, this.centerY + y, r, 0, 2 * Math.PI, false)
-		this.context.fillStyle = color
-		this.context.fill()
-		this.context.lineWidth = 1
-		this.context.strokeStyle = this.config.colorStroke
-		if (color == this.config.colorDigit || !this.config.hideStrokeWhenOff) this.context.stroke()
-		this.context.beginPath()
-		this.context.arc(this.centerX + x + (5 * l) / 18, this.centerY + y, r, 0, 2 * Math.PI, false)
-		this.context.fillStyle = color
-		this.context.fill()
-		this.context.lineWidth = 1
-		this.context.strokeStyle = this.config.colorStroke
-		if (color == this.config.colorDigit || !this.config.hideStrokeWhenOff) this.context.stroke()
+		segments.forEach(([offsetX, offsetY, isActive]) => {
+			const color = isActive ? this.config.colorDigit : this.config.colorDigitColonOff
+			drawArc(this.centerX + posX, this.centerY + posY, offsetX, offsetY, radius, color)
+		})
 	}
 
+	// Draws the colon separator for the digital clock display
 	drawColon(active) {
-		this.context.beginPath()
-		this.context.arc(
-			this.centerX - 0.066 * this.lengthSeg,
-			this.centerY + this.lengthSeg / 3,
-			this.radiusDot,
-			0,
-			2 * Math.PI,
-			false,
-		)
-		this.context.fillStyle = active ? this.config.colorColon : this.config.colorDigitColonOff
-		this.context.fill()
-		this.context.lineWidth = 1
-		this.context.strokeStyle = this.config.colorStroke
-		this.context.stroke()
-		this.context.beginPath()
-		this.context.arc(
-			this.centerX + 0.066 * this.lengthSeg,
-			this.centerY - this.lengthSeg / 3,
-			this.radiusDot,
-			0,
-			2 * Math.PI,
-			false,
-		)
-		this.context.fillStyle = active ? this.config.colorColon : this.config.colorDigitColonOff
-		this.context.fill()
-		this.context.lineWidth = 1
-		this.context.strokeStyle = this.config.colorStroke
-		this.context.stroke()
+		const drawColonDot = (xOffset, yOffset) => {
+			this.context.beginPath()
+			this.context.arc(this.centerX + xOffset, this.centerY + yOffset, this.radiusDot, 0, 2 * Math.PI, false)
+			this.context.fillStyle = active ? this.config.colorColon : this.config.colorDigitColonOff
+			this.context.fill()
+			this.context.lineWidth = 1
+			this.context.strokeStyle = this.config.colorStroke
+			this.context.stroke()
+		}
+
+		drawColonDot(-0.066 * this.lengthSeg, this.lengthSeg / 3)
+		drawColonDot(0.066 * this.lengthSeg, -this.lengthSeg / 3)
 	}
 }
