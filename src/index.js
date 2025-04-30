@@ -14,8 +14,6 @@ class StudioClockInstance extends InstanceBase {
 	async init(config) {
 		this.updateStatus(InstanceStatus.Ok)
 
-		this.png64 = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='
-
 		this.setFeedbackDefinitions(setFeedbacks(this))
 		this.setActionDefinitions([])
 		this.setVariableDefinitions([])
@@ -38,18 +36,15 @@ class StudioClockInstance extends InstanceBase {
 
 	checkClocks() {
 		const date = new Date()
-		const curSec = date.getSeconds()
-
-		if (curSec !== this.lastSec) {
-			this.lastSec = curSec
+		if (date.getSeconds() !== this.lastSec) {
+			this.lastSec = date.getSeconds()
 			this.checkFeedbacks()
 		}
 	}
 
 	renderPng64(config) {
-		const date = new Date()
 		const clock = new StudioClock(256, 256)
-		return clock.RenderClock(date, config)
+		return clock.RenderClock(config)
 	}
 
 	// Return config fields for web config

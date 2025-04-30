@@ -26,8 +26,8 @@ export class StudioClock {
 		this.radiusExt = (this.canvas.width * 0.9) / 2
 		this.radius = (this.canvas.width * 0.8) / 2
 		this.lengthSeg = 10 * (this.radius / 36)
-		this.radiusMajorDot = (this.lengthSeg / 4) * 0.47
-		this.radiusMinorDot = this.radiusMajorDot
+		this.radiusDot = (this.lengthSeg / 4) * 0.47
+		this.radiusMinorDot = this.radiusDot
 
 		this.centerX = this.canvas.height / 2
 		this.centerY = this.canvas.width / 2
@@ -47,9 +47,8 @@ export class StudioClock {
 		}
 	}
 
-	RenderClock(date, config) {
+	RenderClock(config) {
 		this.config = config
-		this.CurrentDate = date
 
 		this.drawCircles()
 		this.drawDigits()
@@ -62,36 +61,31 @@ export class StudioClock {
 		for (let i = 0; i < 60; i += 5) {
 			const sec_x = this.radiusExt * Math.cos(((i - 15) * 2 * Math.PI) / 60)
 			const sec_y = this.radiusExt * Math.sin(((i - 15) * 2 * Math.PI) / 60)
-
 			this.context.beginPath()
-			this.context.arc(sec_x + this.centerX, sec_y + this.centerY, this.radiusMajorDot, 0, 2 * Math.PI, false)
+			this.context.arc(sec_x + this.centerX, sec_y + this.centerY, this.radiusDot, 0, 2 * Math.PI, false)
 			this.context.fillStyle = this.config.colorCircleExternal
 			this.context.fill()
 			this.context.lineWidth = 1
 			this.context.strokeStyle = this.config.colorStroke
 			this.context.stroke()
 		}
-
 		for (let i = 0; i < 60; i++) {
 			const sec_x = this.radius * Math.cos(((i - 15) * 2 * Math.PI) / 60)
 			const sec_y = this.radius * Math.sin(((i - 15) * 2 * Math.PI) / 60)
-
 			this.context.beginPath()
 			this.context.arc(
 				sec_x + this.centerX,
 				sec_y + this.centerY,
-				i % 5 === 0 ? this.radiusMajorDot : this.radiusMinorDot,
+				i % 5 === 0 ? this.radiusDot : this.radiusMinorDot,
 				0,
 				2 * Math.PI,
 				false,
 			)
-
 			if (this.config.reverseDirection ? i < this.CurrentDate.getSeconds() : i <= this.CurrentDate.getSeconds()) {
 				this.context.fillStyle = i % 5 === 0 ? this.config.colorCircleOn : this.config.colorCircleMinorOn
 			} else {
 				this.context.fillStyle = i % 5 === 0 ? this.config.colorCircleOff : this.config.colorCircleMinorOff
 			}
-
 			this.context.fill()
 			this.context.lineWidth = 1
 			this.context.strokeStyle = this.config.colorStroke
@@ -112,7 +106,7 @@ export class StudioClock {
 		this.context.arc(
 			this.centerX + posX + 0.18 * this.lengthSeg - (5 * this.lengthSeg) / 18,
 			this.centerY - this.lengthSeg,
-			this.radiusMajorDot,
+			this.radiusDot,
 			0,
 			2 * Math.PI,
 			false,
@@ -126,7 +120,7 @@ export class StudioClock {
 		this.context.arc(
 			this.centerX + posX + 0.18 * this.lengthSeg,
 			this.centerY - this.lengthSeg,
-			this.radiusMajorDot,
+			this.radiusDot,
 			0,
 			2 * Math.PI,
 			false,
@@ -140,7 +134,7 @@ export class StudioClock {
 		this.context.arc(
 			this.centerX + posX + 0.18 * this.lengthSeg + (5 * this.lengthSeg) / 18,
 			this.centerY - this.lengthSeg,
-			this.radiusMajorDot,
+			this.radiusDot,
 			0,
 			2 * Math.PI,
 			false,
@@ -156,7 +150,7 @@ export class StudioClock {
 		this.context.arc(
 			this.centerX + posX + this.lengthSeg / 2 + 0.132 * this.lengthSeg,
 			this.centerY - (14 * this.lengthSeg) / 18,
-			this.radiusMajorDot,
+			this.radiusDot,
 			0,
 			2 * Math.PI,
 			false,
@@ -170,7 +164,7 @@ export class StudioClock {
 		this.context.arc(
 			this.centerX + posX + this.lengthSeg / 2 + 0.088 * this.lengthSeg,
 			this.centerY - this.lengthSeg / 2,
-			this.radiusMajorDot,
+			this.radiusDot,
 			0,
 			2 * Math.PI,
 			false,
@@ -184,7 +178,7 @@ export class StudioClock {
 		this.context.arc(
 			this.centerX + posX + this.lengthSeg / 2 + 0.044 * this.lengthSeg,
 			this.centerY - (4 * this.lengthSeg) / 18,
-			this.radiusMajorDot,
+			this.radiusDot,
 			0,
 			2 * Math.PI,
 			false,
@@ -200,7 +194,7 @@ export class StudioClock {
 		this.context.arc(
 			this.centerX + posX + this.lengthSeg / 2 - 0.132 * this.lengthSeg,
 			this.centerY + (14 * this.lengthSeg) / 18,
-			this.radiusMajorDot,
+			this.radiusDot,
 			0,
 			2 * Math.PI,
 			false,
@@ -214,7 +208,7 @@ export class StudioClock {
 		this.context.arc(
 			this.centerX + posX + this.lengthSeg / 2 - 0.088 * this.lengthSeg,
 			this.centerY + this.lengthSeg / 2,
-			this.radiusMajorDot,
+			this.radiusDot,
 			0,
 			2 * Math.PI,
 			false,
@@ -228,7 +222,7 @@ export class StudioClock {
 		this.context.arc(
 			this.centerX + posX + this.lengthSeg / 2 - 0.044 * this.lengthSeg,
 			this.centerY + (4 * this.lengthSeg) / 18,
-			this.radiusMajorDot,
+			this.radiusDot,
 			0,
 			2 * Math.PI,
 			false,
@@ -244,7 +238,7 @@ export class StudioClock {
 		this.context.arc(
 			this.centerX + posX - 0.18 * this.lengthSeg - (5 * this.lengthSeg) / 18,
 			this.centerY + this.lengthSeg,
-			this.radiusMajorDot,
+			this.radiusDot,
 			0,
 			2 * Math.PI,
 			false,
@@ -258,7 +252,7 @@ export class StudioClock {
 		this.context.arc(
 			this.centerX + posX - 0.18 * this.lengthSeg,
 			this.centerY + this.lengthSeg,
-			this.radiusMajorDot,
+			this.radiusDot,
 			0,
 			2 * Math.PI,
 			false,
@@ -272,7 +266,7 @@ export class StudioClock {
 		this.context.arc(
 			this.centerX + posX - 0.18 * this.lengthSeg + (5 * this.lengthSeg) / 18,
 			this.centerY + this.lengthSeg,
-			this.radiusMajorDot,
+			this.radiusDot,
 			0,
 			2 * Math.PI,
 			false,
@@ -288,7 +282,7 @@ export class StudioClock {
 		this.context.arc(
 			this.centerX + posX - this.lengthSeg / 2 - 0.132 * this.lengthSeg,
 			this.centerY + (14 * this.lengthSeg) / 18,
-			this.radiusMajorDot,
+			this.radiusDot,
 			0,
 			2 * Math.PI,
 			false,
@@ -302,7 +296,7 @@ export class StudioClock {
 		this.context.arc(
 			this.centerX + posX - this.lengthSeg / 2 - 0.088 * this.lengthSeg,
 			this.centerY + this.lengthSeg / 2,
-			this.radiusMajorDot,
+			this.radiusDot,
 			0,
 			2 * Math.PI,
 			false,
@@ -316,7 +310,7 @@ export class StudioClock {
 		this.context.arc(
 			this.centerX + posX - this.lengthSeg / 2 - 0.044 * this.lengthSeg,
 			this.centerY + (4 * this.lengthSeg) / 18,
-			this.radiusMajorDot,
+			this.radiusDot,
 			0,
 			2 * Math.PI,
 			false,
@@ -332,7 +326,7 @@ export class StudioClock {
 		this.context.arc(
 			this.centerX + posX - this.lengthSeg / 2 + 0.132 * this.lengthSeg,
 			this.centerY - (14 * this.lengthSeg) / 18,
-			this.radiusMajorDot,
+			this.radiusDot,
 			0,
 			2 * Math.PI,
 			false,
@@ -346,7 +340,7 @@ export class StudioClock {
 		this.context.arc(
 			this.centerX + posX - this.lengthSeg / 2 + 0.088 * this.lengthSeg,
 			this.centerY - this.lengthSeg / 2,
-			this.radiusMajorDot,
+			this.radiusDot,
 			0,
 			2 * Math.PI,
 			false,
@@ -360,7 +354,7 @@ export class StudioClock {
 		this.context.arc(
 			this.centerX + posX - this.lengthSeg / 2 + 0.044 * this.lengthSeg,
 			this.centerY - (4 * this.lengthSeg) / 18,
-			this.radiusMajorDot,
+			this.radiusDot,
 			0,
 			2 * Math.PI,
 			false,
@@ -376,7 +370,7 @@ export class StudioClock {
 		this.context.arc(
 			this.centerX + posX - (5 * this.lengthSeg) / 18,
 			this.centerY,
-			this.radiusMajorDot,
+			this.radiusDot,
 			0,
 			2 * Math.PI,
 			false,
@@ -387,7 +381,7 @@ export class StudioClock {
 		this.context.strokeStyle = this.config.colorStroke
 		if (color == this.config.colorDigit || !this.config.hideStrokeWhenOff) this.context.stroke()
 		this.context.beginPath()
-		this.context.arc(this.centerX + posX, this.centerY, this.radiusMajorDot, 0, 2 * Math.PI, false)
+		this.context.arc(this.centerX + posX, this.centerY, this.radiusDot, 0, 2 * Math.PI, false)
 		this.context.fillStyle = color
 		this.context.fill()
 		this.context.lineWidth = 1
@@ -397,7 +391,7 @@ export class StudioClock {
 		this.context.arc(
 			this.centerX + posX + (5 * this.lengthSeg) / 18,
 			this.centerY,
-			this.radiusMajorDot,
+			this.radiusDot,
 			0,
 			2 * Math.PI,
 			false,
@@ -414,7 +408,7 @@ export class StudioClock {
 		this.context.arc(
 			this.centerX - 0.066 * this.lengthSeg,
 			this.centerY + this.lengthSeg / 3,
-			this.radiusMajorDot,
+			this.radiusDot,
 			0,
 			2 * Math.PI,
 			false,
@@ -424,12 +418,11 @@ export class StudioClock {
 		this.context.lineWidth = 1
 		this.context.strokeStyle = this.config.colorStroke
 		this.context.stroke()
-
 		this.context.beginPath()
 		this.context.arc(
 			this.centerX + 0.066 * this.lengthSeg,
 			this.centerY - this.lengthSeg / 3,
-			this.radiusMajorDot,
+			this.radiusDot,
 			0,
 			2 * Math.PI,
 			false,
