@@ -1,0 +1,33 @@
+{
+	"id": "generic-studioclock",
+	"name": "Studio Clock",
+	"shortname": "Clock",
+	"description": "Draws a beautiful studio-style clock on your buttons.",
+	"version": "1.0.0",
+	"license": "MIT",
+	"repository": "git+https://github.com/bitfocus/companion-module-generic-studioclock.git",
+	"bugs": "https://github.com/bitfocus/companion-module-generic-studioclock/issues",
+	"maintainers": [
+		{
+			"name": "premultiply",
+			"email": "4681172+premultiply@users.noreply.github.com"
+		}
+	],
+	"legacyIds": [],
+	"runtime": {
+		"type": "node22",
+		"api": "nodejs-ipc",
+		"apiVersion": "0.0.0",
+		"entrypoint": "../src/index.js"
+	},
+	"manufacturer": "Generic",
+	"products": [
+		"Studio Clock"
+	],
+	"keywords": [
+		"Studio",
+		"Clock",
+		"LED",
+		"Analog"
+	]
+}
