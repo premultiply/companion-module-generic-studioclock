@@ -310,7 +310,7 @@ export function setPresets(self) {
 			{
 				feedbackId: 'renderClock',
 				options: {
-					colorStroke: colorTransparent,
+					colorStroke: '#00baff60',
 					colorCircleOn: '#00baff',
 					colorCircleOff: colorTransparent,
 					reverseDirection: false,
@@ -349,17 +349,17 @@ export function setPresets(self) {
 			{
 				feedbackId: 'renderClock',
 				options: {
-					colorStroke: colorTransparent,
+					colorStroke: 'rgba(0, 0, 0, 0.2)',
 					colorCircleOn: colorRed,
-					colorCircleOff: 'rgba(127, 0, 0, 0.25)',
+					colorCircleOff: 'rgba(255, 127, 0, 0.1)',
 					reverseDirection: false,
 					colorCircleMinorOn: colorRed,
-					colorCircleMinorOff: 'rgba(127, 0, 0, 0.25)',
+					colorCircleMinorOff: 'rgba(255, 127, 0, 0.1)',
 					colorCircleExternal: colorRed,
 					colorDigit: colorRed,
 					colorColon: colorRed,
-					colorDigitColonOff: 'rgba(157, 0, 0, 0.25)',
-					hideStrokeWhenOff: true,
+					colorDigitColonOff: 'rgba(255, 127, 0, 0.1)',
+					hideStrokeWhenOff: false,
 				},
 			},
 		],
