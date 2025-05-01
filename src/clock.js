@@ -18,6 +18,7 @@ export class StudioClock {
 		this.canvas = createCanvas(width, height)
 		this.context = this.canvas.getContext('2d')
 
+		// definition of internal size ratios
 		this.radExt = (this.canvas.width * 0.9) / 2
 		this.radius = (this.canvas.width * 0.8) / 2
 		this.lenSeg = 9 * (this.radius / 36)
@@ -26,6 +27,7 @@ export class StudioClock {
 		this.lenSmSeg = (this.lenSeg * 3) / 5
 		this.radSmLed = (this.lenSmSeg / 4) * 0.47
 
+		// positioning of the clock
 		this.centerX = this.canvas.width / 2
 		this.centerY = this.canvas.height / 2
 
