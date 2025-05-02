@@ -44,6 +44,7 @@ export class StudioClock {
 		 * @property {string} colorColon - Color of the colon separator.
 		 * @property {string} colorDigitColonOff - Color of inactive digits and colon.
 		 * @property {boolean} hideStrokeWhenOff - If true, hides the stroke for inactive digits.
+		 * @property {boolean} showSeconds - If true, displays additional digits for seconds.
 		 */
 		this.config = {
 			colorStroke: 'rgba(68, 0, 0, 0.0)',
@@ -57,6 +58,7 @@ export class StudioClock {
 			colorColon: 'rgba(255, 0, 0, 1)',
 			colorDigitColonOff: 'rgba(0, 0, 0, 0.0)',
 			hideStrokeWhenOff: true, // digits only
+			showSeconds: true,
 		}
 	}
 
@@ -69,16 +71,28 @@ export class StudioClock {
 		const seconds = currentDate.getSeconds()
 
 		this.drawWaves(seconds)
-		this.drawDigits(hours, minutes, seconds)
+		this.drawDigits(hours, minutes, seconds, this.config.showSeconds)
 		this.drawColon(seconds % 2 === 0)
+	}
 
+	GetImageBuffer() {
+		return new Uint8Array(this.context.getImageData(0, 0, this.canvas.width, this.canvas.height).data.buffer)
+	}
+
+	GetPng64() {
 		return this.canvas.toDataURL('image/png').split(';base64,')[1]
 	}
 
 	drawWaves(seconds) {
+		// Precompute trigonometric values for all 60 seconds
+		const trigValues = Array.from({ length: 60 }, (_, i) => ({
+			cos: Math.cos(((i - 15) * 2 * Math.PI) / 60),
+			sin: Math.sin(((i - 15) * 2 * Math.PI) / 60),
+		}))
+
 		for (let i = 0; i < 60; i += 5) {
-			const sec_x = this.radExt * Math.cos(((i - 15) * 2 * Math.PI) / 60)
-			const sec_y = this.radExt * Math.sin(((i - 15) * 2 * Math.PI) / 60)
+			const sec_x = this.radExt * trigValues[i].cos
+			const sec_y = this.radExt * trigValues[i].sin
 			this.context.beginPath()
 			this.context.arc(sec_x + this.centerX, sec_y + this.centerY, this.radLed, 0, 2 * Math.PI, false)
 			this.context.fillStyle = this.config.colorCircleExternal
@@ -87,9 +101,10 @@ export class StudioClock {
 			this.context.strokeStyle = this.config.colorStroke
 			this.context.stroke()
 		}
+
 		for (let i = 0; i < 60; i++) {
-			const sec_x = this.radius * Math.cos(((i - 15) * 2 * Math.PI) / 60)
-			const sec_y = this.radius * Math.sin(((i - 15) * 2 * Math.PI) / 60)
+			const sec_x = this.radius * trigValues[i].cos
+			const sec_y = this.radius * trigValues[i].sin
 			this.context.beginPath()
 			this.context.arc(
 				sec_x + this.centerX,
@@ -111,7 +126,7 @@ export class StudioClock {
 		}
 	}
 
-	drawDigits(hours, minutes, seconds) {
+	drawDigits(hours, minutes, seconds, showSeconds = true) {
 		// Hours
 		this.drawDigit(-2 * (this.radius / 3), 0, this.lenSeg, this.radLed, Math.floor(hours / 10))
 		this.drawDigit(-7 * (this.radius / 24), 0, this.lenSeg, this.radLed, hours % 10)
@@ -119,8 +134,10 @@ export class StudioClock {
 		this.drawDigit(7 * (this.radius / 24), 0, this.lenSeg, this.radLed, Math.floor(minutes / 10))
 		this.drawDigit(2 * (this.radius / 3), 0, this.lenSeg, this.radLed, minutes % 10)
 		// Seconds
-		this.drawDigit(3 * (this.radius / 24), this.radius / 2, this.lenSmSeg, this.radSmLed, seconds % 10)
-		this.drawDigit(-3 * (this.radius / 24), this.radius / 2, this.lenSmSeg, this.radSmLed, Math.floor(seconds / 10))
+		if (showSeconds) {
+			this.drawDigit(-3 * (this.radius / 24), this.radius / 2, this.lenSmSeg, this.radSmLed, Math.floor(seconds / 10))
+			this.drawDigit(3 * (this.radius / 24), this.radius / 2, this.lenSmSeg, this.radSmLed, seconds % 10)
+		}
 	}
 
 	drawDigit(posX, posY, segLen, radius, digitValue) {

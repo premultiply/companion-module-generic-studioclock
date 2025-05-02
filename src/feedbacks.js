@@ -1,4 +1,4 @@
-import { combineRgb } from '@companion-module/base'
+import { StudioClock } from './clock.js'
 
 export function setFeedbacks(self) {
 	const feedbacks = {}
@@ -92,9 +92,35 @@ export function setFeedbacks(self) {
 				label: 'Hide Stroke When Digit Off',
 				default: true,
 			},
+			{
+				id: 'showSeconds',
+				type: 'checkbox',
+				label: 'Show digits for seconds',
+				default: true,
+			},
+			{
+				id: 'png64',
+				type: 'checkbox',
+				label: 'Render as PNG',
+				default: false,
+			},
 		],
 		callback: function (feedback) {
-			return { png64: self.renderPng64(feedback.options) }
+			const clock = new StudioClock(
+				feedback.options.png64 ? 288 : feedback.image.width,
+				feedback.options.png64 ? 288 : feedback.image.height,
+			)
+
+			clock.RenderClock(feedback.options)
+
+			if (feedback.options.png64) return { png64: clock.GetPng64() }
+
+			return {
+				imageBufferEncoding: {
+					pixelFormat: 'RGBA',
+				},
+				imageBuffer: clock.GetImageBuffer(),
+			}
 		},
 	}
 

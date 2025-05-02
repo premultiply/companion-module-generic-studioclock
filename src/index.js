@@ -1,7 +1,6 @@
 import { InstanceBase, InstanceStatus, runEntrypoint } from '@companion-module/base'
 import { setFeedbacks } from './feedbacks.js'
 import { setPresets } from './presets.js'
-import { StudioClock } from './clock.js'
 
 class StudioClockInstance extends InstanceBase {
 	constructor(internal) {
@@ -15,9 +14,6 @@ class StudioClockInstance extends InstanceBase {
 		this.updateStatus(InstanceStatus.Ok)
 
 		this.setFeedbackDefinitions(setFeedbacks(this))
-		// this.setActionDefinitions([])
-		// this.setVariableDefinitions([])
-		// this.setVariableValues({})
 		this.setPresetDefinitions(setPresets(this))
 
 		this.timerID = setInterval(() => this.checkClocks(), 250)
@@ -40,11 +36,6 @@ class StudioClockInstance extends InstanceBase {
 			this.lastSec = date.getSeconds()
 			this.checkFeedbacks()
 		}
-	}
-
-	renderPng64(config) {
-		const clock = new StudioClock(256, 256)
-		return clock.RenderClock(config)
 	}
 
 	// Return config fields for web config
