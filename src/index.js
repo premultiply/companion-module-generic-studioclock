@@ -40,7 +40,31 @@ class StudioClockInstance extends InstanceBase {
 
 	// Return config fields for web config
 	getConfigFields() {
-		return []
+		return [
+			{
+				type: 'static-text',
+				id: 'info',
+				width: 12,
+				label: 'Information',
+				value:
+					'This module displays configurable studio clocks on your buttons that reflect your local system time. ' +
+					'Make sure that the system clock is set correctly. It is strongly recommended to synchronize it with an NTP server. ' +
+					'The clock design itself is set individually via the respective feedback configuration. ' +
+					'You can select the renderer output method for this instance here. Selecting “ImageBuffer” may improve rendering performance, but the resulting graphics resolution is rather limited.',
+			},
+			{
+				type: 'dropdown',
+				id: 'output',
+				width: 6,
+				choices: [
+					{ id: 'png64', label: 'PNG (288 x 288 px)' },
+					{ id: 'imagebuffer', label: 'ImageBuffer (72 x 72 px)' },
+				],
+				default: 'png64',
+				label: 'Output Method',
+				tooltip: 'Select the output method for the clock rendering.',
+			},
+		]
 	}
 }
 
